@@ -1,0 +1,106 @@
+let accounts = [];
+document.querySelector('.enableMetamask')
+.addEventListener('click', async () => {
+    accounts = await ethereum.request({
+      method: 'eth_requestAccounts'
+    });
+    console.log(accounts);
+});
+// 1. Let's call the Deploy NFT with the signatureId present
+//    You can use any arbitrary UUID v4 string as a signatureId
+const response = await axios.post('https://api-eu1.tatum.io/v3/nft/deploy/', {
+  "name": "Test Token",
+  "chain": "MATIC",
+  "symbol": "TTC",
+  "signatureId": "b7ad58f7-d826-4db5-8a52-4f492935a7b4"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+
+// 2. Response is the ID of the prepared transaction
+const {
+  signatureId
+} = response.data;
+
+// 3. Let's grab the transaction and get the configuration
+const {
+  data
+} = await axios.get('https://api-eu1.tatum.io/v3/kms/' + signatureId, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+const response = await axios.post('https://api-eu1.tatum.io/v3/nft/deploy/', {
+  "name": "Test Token",
+  "chain": "MATIC",
+  "symbol": "TTC",
+  "signatureId": "b7ad58f7-d826-4db5-8a52-4f492935a7b4"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+const {
+  signatureId
+} = response.data;
+const {
+  data
+} = await axios.get('https://api-eu1.tatum.io/v3/kms/' + signatureId, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+const txConfig = JSON.parse(data.serializedTransaction);
+txConfig.from = accounts[0];
+txConfig.gasPrice = txConfig.gasPrice ? parseInt(txConfig.gasPrice).toString(16) : undefined;
+console.log(await ethereum.request({
+  method: 'eth_sendTransaction',
+  params: [txConfig],
+}));
+// 1. Let's call the Deploy NFT with the signatureId present
+//    You can use any arbitrary UUID v4 string as a signatureId
+const response = await axios.post('https://api-eu1.tatum.io/v3/nft/deploy/', {
+  "name": "Test Token",
+  "chain": "MATIC",
+  "symbol": "TTC",
+  "signatureId": "b7ad58f7-d826-4db5-8a52-4f492935a7b4"
+}, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+
+// 2. Response is the ID of the prepared transaction
+const {
+  signatureId
+} = response.data;
+
+// 3. Let's grab the transaction and get the configuration
+const {
+  data
+} = await axios.get('https://api-eu1.tatum.io/v3/kms/' + signatureId, {
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+
+// 4. Get the transaction config
+const txConfig = JSON.parse(data.serializedTransaction);
+
+// 5. Set the correct sender account
+txConfig.from = accounts[0];
+
+// 6. Put gas price in HEX
+txConfig.gasPrice = txConfig.gasPrice ? parseInt(txConfig.gasPrice).toString(16) : undefined;
+
+// 7. Send tx to MetaMask
+console.log(await ethereum.request({
+  method: 'eth_sendTransaction',
+  params: [txConfig],
+}));
+
+
+
+
